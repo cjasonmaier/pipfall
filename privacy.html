@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy – Pipfall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design Tokens ──────────────────────────────────────── */
+    :root {
+      --bg:        #121418;
+      --bg2:       #1a1e24;
+      --bg3:       #21262e;
+      --surface:   #252b34;
+      --border:    rgba(255,255,255,0.07);
+
+      --blue:      #3399db;
+      --green:     #2ecc70;
+      --yellow:    #f2c40a;
+      --red:       #e84d3d;
+
+      --text:      #f0f2f5;
+      --muted:     #8a92a0;
+      --body-text: rgba(240,242,245,0.78);
+
+      --radius:    14px;
+      --radius-lg: 22px;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Noise grain overlay ────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.55;
+    }
+
+    /* ── Grid background ────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .z1 { position: relative; z-index: 1; }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(18,20,24,0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.35rem; font-weight: 900; letter-spacing: -0.5px;
+      color: var(--blue); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a {
+      color: var(--muted); font-size: 0.85rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--text); }
+
+    /* ── Page Header ────────────────────────────────────────── */
+    .page-header {
+      padding: 5rem 2rem 3.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .page-header-glow {
+      position: absolute;
+      width: 500px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(51,153,219,0.10) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .page-eyebrow {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--blue);
+      background: rgba(51,153,219,0.12);
+      border: 1px solid rgba(51,153,219,0.28);
+      border-radius: 99px; padding: 0.35em 1em;
+      display: inline-block;
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .page-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 900; letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .page-meta {
+      font-size: 0.82rem; color: var(--muted); font-weight: 600;
+      letter-spacing: 0.05em;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    /* ── Content layout ─────────────────────────────────────── */
+    .content-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    /* Summary cards strip */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+    .summary-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.25rem 1.1rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .summary-card .sc-icon {
+      font-size: 1.5rem; line-height: 1;
+    }
+    .summary-card .sc-label {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .summary-card .sc-value {
+      font-size: 0.9rem; font-weight: 700; color: var(--text);
+      line-height: 1.3;
+    }
+    .summary-card.good  { border-color: rgba(46,204,112,0.25); }
+    .summary-card.good  .sc-icon { color: var(--green); }
+    .summary-card.info  { border-color: rgba(51,153,219,0.25); }
+    .summary-card.info  .sc-icon { color: var(--blue); }
+    .summary-card.warn  { border-color: rgba(242,196,10,0.25); }
+    .summary-card.warn  .sc-icon { color: var(--yellow); }
+
+    /* Section structure */
+    .policy-section {
+      margin-bottom: 2.75rem;
+      padding-bottom: 2.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .policy-section:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--blue); letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem; display: block;
+    }
+    .section-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.45rem; font-weight: 800;
+      color: var(--text); margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .policy-section p {
+      font-size: 0.95rem; color: var(--body-text);
+      line-height: 1.75; margin-bottom: 0.9rem;
+    }
+    .policy-section p:last-child { margin-bottom: 0; }
+
+    /* Callout box */
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.1rem 1.4rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem; color: var(--body-text); line-height: 1.65;
+    }
+    .callout.green { border-left-color: var(--green); }
+    .callout.yellow { border-left-color: var(--yellow); }
+    .callout a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    .callout a:hover { text-decoration: underline; }
+
+    /* Data table */
+    .data-table {
+      width: 100%; border-collapse: collapse;
+      margin: 1.25rem 0; font-size: 0.88rem;
+    }
+    .data-table th {
+      text-align: left; padding: 0.6rem 1rem;
+      background: var(--surface);
+      color: var(--muted); font-size: 0.7rem;
+      font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th:first-child { border-radius: var(--radius) 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 var(--radius) 0 0; }
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--body-text); vertical-align: top;
+      line-height: 1.55;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    .tag {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 0.2em 0.6em;
+      border-radius: 4px;
+    }
+    .tag-third { background: rgba(242,196,10,0.15); color: var(--yellow); }
+    .tag-apple { background: rgba(51,153,219,0.15); color: var(--blue); }
+    .tag-none  { background: rgba(46,204,112,0.15); color: var(--green); }
+
+    /* Bullet list */
+    .policy-list {
+      list-style: none; margin: 0.75rem 0 1rem; padding: 0;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .policy-list li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.93rem; color: var(--body-text); line-height: 1.6;
+    }
+    .policy-list li::before {
+      content: '';
+      display: block; flex-shrink: 0;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--blue);
+      margin-top: 0.55rem;
+    }
+
+    /* Contact block */
+    .contact-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 2rem;
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    .contact-icon {
+      font-size: 2rem; flex-shrink: 0;
+    }
+    .contact-block h4 {
+      font-size: 0.95rem; font-weight: 800; margin-bottom: 0.3rem;
+    }
+    .contact-block a {
+      color: var(--blue); font-size: 0.9rem; font-weight: 700;
+      text-decoration: none;
+    }
+    .contact-block a:hover { text-decoration: underline; }
+    .contact-block p {
+      font-size: 0.83rem; color: var(--muted); margin: 0;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.4rem; font-weight: 900; color: var(--blue);
+    }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a {
+      color: var(--muted); font-size: 0.85rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { color: var(--muted); font-size: 0.78rem; }
+
+    /* ── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .contact-block { flex-direction: column; text-align: center; }
+      .data-table { font-size: 0.8rem; }
+      .data-table th, .data-table td { padding: 0.5rem 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────── -->
+  <nav class="z1">
+    <a class="nav-logo" href="index.html">pipfall</a>
+    <div class="nav-links">
+      <a href="index.html#how">How to Play</a>
+      <a href="index.html#features">Features</a>
+      <a href="support.html">Support</a>
+      <a href="privacy.html" class="active">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header z1">
+    <div class="page-header-glow"></div>
+    <div class="page-eyebrow">Legal</div>
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="page-meta">Pipfall &nbsp;·&nbsp; Effective Date: May 6, 2026 &nbsp;·&nbsp; App Rating: 4+</p>
+  </header>
+
+  <!-- ── Content ───────────────────────────────────────────── -->
+  <main class="content-wrap z1">
+
+    <!-- Quick-read summary cards -->
+    <div class="summary-cards">
+      <div class="summary-card good">
+        <div class="sc-icon">🙅</div>
+        <div class="sc-label">We Collect</div>
+        <div class="sc-value">No personal data directly from you</div>
+      </div>
+      <div class="summary-card warn">
+        <div class="sc-icon">📢</div>
+        <div class="sc-label">Advertising</div>
+        <div class="sc-value">Google AdMob (third-party)</div>
+      </div>
+      <div class="summary-card info">
+        <div class="sc-icon">🛒</div>
+        <div class="sc-label">Purchases</div>
+        <div class="sc-value">Handled entirely by Apple</div>
+      </div>
+      <div class="summary-card good">
+        <div class="sc-icon">👶</div>
+        <div class="sc-label">App Rating</div>
+        <div class="sc-value">4+ — suitable for all ages</div>
+      </div>
+    </div>
+
+    <!-- 1. Overview -->
+    <section class="policy-section">
+      <span class="section-number">01</span>
+      <h2 class="section-heading">Overview</h2>
+      <p>
+        Pipfall ("we," "us," or "our") is a puzzle game developed by C. Jason Maier and
+        distributed on the Apple App Store. This Privacy Policy explains how information
+        is collected, used, and shared when you play Pipfall on your iOS device.
+      </p>
+      <p>
+        We are committed to protecting your privacy. <strong>We do not directly collect,
+        store, or transmit any personal information about you.</strong> The only data
+        collection that occurs is performed by third-party services described in this
+        policy, each governed by their own privacy practices.
+      </p>
+      <div class="callout green">
+        This app is rated <strong>4+</strong> on the Apple App Store and is suitable for
+        all ages. It does not contain user-generated content, social features, or any
+        mechanisms for children to share personal information.
+      </div>
+    </section>
+
+    <!-- 2. Information We Do Not Collect -->
+    <section class="policy-section">
+      <span class="section-number">02</span>
+      <h2 class="section-heading">Information We Do Not Collect</h2>
+      <p>We do not collect, store, or process any of the following:</p>
+      <ul class="policy-list">
+        <li>Your name, email address, phone number, or any contact information</li>
+        <li>Your location data (precise or approximate)</li>
+        <li>Your Apple ID or any account credentials</li>
+        <li>Photos, contacts, or any content from your device</li>
+        <li>Health or fitness data</li>
+        <li>Browsing history or activity outside the app</li>
+        <li>Any biometric or sensitive personal identifiers</li>
+      </ul>
+      <p>
+        All game progress, scores, and settings are stored locally on your device
+        using Apple's standard on-device storage mechanisms. This data never leaves your
+        device via our systems.
+      </p>
+    </section>
+
+    <!-- 3. Third-Party Advertising (AdMob) -->
+    <section class="policy-section">
+      <span class="section-number">03</span>
+      <h2 class="section-heading">Third-Party Advertising — Google AdMob</h2>
+      <p>
+        Pipfall displays advertisements served by <strong>Google AdMob</strong>, a
+        third-party advertising platform operated by Google LLC. AdMob may collect and
+        use certain data from your device in order to serve ads, including
+        interest-based or personalised advertising.
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Data Type</th>
+            <th>Purpose</th>
+            <th>Collected By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Advertising identifier (IDFA)</td>
+            <td>Ad personalisation & frequency capping</td>
+            <td><span class="tag tag-third">Google AdMob</span></td>
+          </tr>
+          <tr>
+            <td>IP address</td>
+            <td>Approximate geolocation for ad targeting</td>
+            <td><span class="tag tag-third">Google AdMob</span></td>
+          </tr>
+          <tr>
+            <td>Device information</td>
+            <td>Ad rendering, fraud prevention</td>
+            <td><span class="tag tag-third">Google AdMob</span></td>
+          </tr>
+          <tr>
+            <td>App interaction data</td>
+            <td>Ad performance measurement</td>
+            <td><span class="tag tag-third">Google AdMob</span></td>
+          </tr>
+          <tr>
+            <td>Your personal data (name, email, etc.)</td>
+            <td>—</td>
+            <td><span class="tag tag-none">Not collected</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout yellow">
+        AdMob's data collection is governed by the
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.
+        We encourage you to review it to understand how Google handles your data.
+        You can opt out of personalised advertising at any time through your iOS
+        device settings under <strong>Privacy &amp; Security → Tracking</strong>.
+      </div>
+
+      <p>
+        When you first launch Pipfall, iOS will present Apple's App Tracking
+        Transparency (ATT) prompt asking for your permission before AdMob can access
+        your device's advertising identifier. You may choose to allow or deny tracking
+        at that time. If you deny tracking, AdMob will serve non-personalised ads only
+        and will collect less data.
+      </p>
+    </section>
+
+    <!-- 4. In-App Purchases -->
+    <section class="policy-section">
+      <span class="section-number">04</span>
+      <h2 class="section-heading">In-App Purchases</h2>
+      <p>
+        Pipfall offers optional in-app purchases. All purchase transactions are
+        processed exclusively through <strong>Apple's App Store</strong> using
+        StoreKit. We do not see, handle, or store any payment information such as
+        credit card numbers, billing addresses, or Apple ID credentials.
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Data Type</th>
+            <th>Handled By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Payment card details</td>
+            <td><span class="tag tag-apple">Apple App Store</span></td>
+          </tr>
+          <tr>
+            <td>Billing address</td>
+            <td><span class="tag tag-apple">Apple App Store</span></td>
+          </tr>
+          <tr>
+            <td>Purchase receipts &amp; entitlements</td>
+            <td><span class="tag tag-apple">Apple App Store</span></td>
+          </tr>
+          <tr>
+            <td>Apple ID</td>
+            <td><span class="tag tag-apple">Apple App Store</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        For questions about a purchase or refund, please refer to
+        <a href="https://support.apple.com/billing" target="_blank" rel="noopener">Apple's billing support</a>
+        or review
+        <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple's Privacy Policy</a>.
+      </div>
+    </section>
+
+    <!-- 5. Children's Privacy -->
+    <section class="policy-section">
+      <span class="section-number">05</span>
+      <h2 class="section-heading">Children's Privacy</h2>
+      <p>
+        Pipfall is rated <strong>4+</strong> and is designed to be safe for users of all
+        ages, including children under 13. In compliance with the Children's Online
+        Privacy Protection Act (COPPA) and equivalent regulations:
+      </p>
+      <ul class="policy-list">
+        <li>We do not knowingly collect personal information from children under 13.</li>
+        <li>The app does not include chat, messaging, or any social features.</li>
+        <li>The app does not allow children to post or share any content.</li>
+        <li>The app does not link to external websites accessible to children.</li>
+      </ul>
+      <p>
+        Advertising shown in Pipfall is delivered by Google AdMob. When the app is used
+        by a child, we rely on Apple's ATT framework and AdMob's child-directed settings
+        to ensure ads are appropriate and that data collection is limited. If you are a
+        parent or guardian and believe your child has provided personal information,
+        please contact us using the details in Section 9.
+      </p>
+    </section>
+
+    <!-- 6. Data Sharing -->
+    <section class="policy-section">
+      <span class="section-number">06</span>
+      <h2 class="section-heading">Data Sharing &amp; Disclosure</h2>
+      <p>
+        Because we do not collect personal data, we have no personal data to sell,
+        trade, or share with third parties. The only data flows that occur are:
+      </p>
+      <ul class="policy-list">
+        <li><strong>Google AdMob</strong> — receives device and usage signals as described in Section 3 to serve ads.</li>
+        <li><strong>Apple Inc.</strong> — processes in-app purchase transactions and may collect crash or performance diagnostics if you have opted in to share analytics with app developers through iOS Settings.</li>
+      </ul>
+      <p>
+        We will disclose information if required to do so by law or in the good-faith
+        belief that such action is necessary to comply with a legal obligation, protect
+        and defend our rights or property, or protect the safety of users or the public.
+      </p>
+    </section>
+
+    <!-- 7. Data Retention & Security -->
+    <section class="policy-section">
+      <span class="section-number">07</span>
+      <h2 class="section-heading">Data Retention &amp; Security</h2>
+      <p>
+        All game data (progress, high scores, settings) is stored locally on your device
+        and is subject to Apple's standard iOS security model, including device
+        encryption. We have no servers storing your personal data and therefore have no
+        data retention schedule to publish.
+      </p>
+      <p>
+        You can delete all locally stored game data at any time by uninstalling Pipfall
+        from your device. If you use iCloud backup, your device's iCloud settings govern
+        whether game data is included in backups.
+      </p>
+    </section>
+
+    <!-- 8. Your Rights & Choices -->
+    <section class="policy-section">
+      <span class="section-number">08</span>
+      <h2 class="section-heading">Your Rights &amp; Choices</h2>
+      <p>You have the following controls available to you:</p>
+
+      <ul class="policy-list">
+        <li>
+          <strong>Opt out of ad personalisation</strong> — Go to iOS
+          <em>Settings → Privacy &amp; Security → Tracking</em> and disable tracking
+          for Pipfall, or disable "Allow Apps to Request to Track" globally.
+        </li>
+        <li>
+          <strong>Reset your advertising identifier</strong> — Go to iOS
+          <em>Settings → Privacy &amp; Security → Tracking → Reset Advertising Identifier</em>.
+        </li>
+        <li>
+          <strong>Delete game data</strong> — Uninstall the app from your device to
+          remove all locally stored game data.
+        </li>
+        <li>
+          <strong>Manage purchases</strong> — Manage or cancel subscriptions and request
+          refunds through the App Store or Apple's billing support.
+        </li>
+        <li>
+          <strong>Apple app privacy report</strong> — iOS 15+ users can view an
+          App Privacy Report under <em>Settings → Privacy &amp; Security</em> to see
+          what data domains the app contacts.
+        </li>
+      </ul>
+
+      <p>
+        If you are located in the European Economic Area (EEA), United Kingdom, or
+        California, you may have additional rights under GDPR, UK GDPR, or CCPA
+        respectively. Since we do not directly collect personal data, most of these
+        rights (access, rectification, erasure) apply primarily to data held by
+        Google AdMob or Apple. Please contact those services directly for such requests.
+        You may also contact us at the address in Section 9.
+      </p>
+    </section>
+
+    <!-- 9. Contact -->
+    <section class="policy-section">
+      <span class="section-number">09</span>
+      <h2 class="section-heading">Contact Us</h2>
+      <p>
+        If you have any questions, concerns, or requests regarding this Privacy Policy
+        or the privacy practices of Pipfall, please reach out:
+      </p>
+      <div class="contact-block">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <h4>Privacy Inquiries</h4>
+          <a href="mailto:privacy@pipfall.app">privacy@pipfall.app</a>
+          <p>We will respond to privacy-related inquiries within 30 days.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Changes to this Policy -->
+    <section class="policy-section">
+      <span class="section-number">10</span>
+      <h2 class="section-heading">Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. When we do, we will revise
+        the effective date at the top of this page. If changes are material, we will
+        provide a more prominent notice (such as a notice within the app or on this
+        website). Your continued use of Pipfall after any changes constitutes your
+        acceptance of the updated policy.
+      </p>
+      <p>
+        We encourage you to review this policy periodically to stay informed about how
+        we are protecting your information.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner z1">
+      <div class="footer-logo">pipfall</div>
+      <div class="footer-links">
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+      <p class="footer-copy">© 2026 C. Jason Maier. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
