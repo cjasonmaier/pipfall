@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support – Pipfall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design Tokens ──────────────────────────────────────── */
+    :root {
+      --bg:        #121418;
+      --bg2:       #1a1e24;
+      --bg3:       #21262e;
+      --surface:   #252b34;
+      --border:    rgba(255,255,255,0.07);
+
+      --blue:      #3399db;
+      --green:     #2ecc70;
+      --yellow:    #f2c40a;
+      --red:       #e84d3d;
+
+      --text:      #f0f2f5;
+      --muted:     #8a92a0;
+      --body-text: rgba(240,242,245,0.78);
+
+      --radius:    14px;
+      --radius-lg: 22px;
+    }
+
+    /* ── Reset ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Noise grain overlay ────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.55;
+    }
+
+    /* ── Grid background ────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .z1 { position: relative; z-index: 1; }
+
+    /* ── Nav ────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(18,20,24,0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.35rem; font-weight: 900; letter-spacing: -0.5px;
+      color: var(--blue); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a {
+      color: var(--muted); font-size: 0.85rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--text); }
+
+    /* ── Page Header ────────────────────────────────────────── */
+    .page-header {
+      padding: 5rem 2rem 3.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .page-header-glow {
+      position: absolute;
+      width: 500px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(46,204,112,0.09) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .page-eyebrow {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--green);
+      background: rgba(46,204,112,0.10);
+      border: 1px solid rgba(46,204,112,0.25);
+      border-radius: 99px; padding: 0.35em 1em;
+      display: inline-block;
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .page-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 900; letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .page-subtitle {
+      font-size: 1rem; color: var(--muted); max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    /* ── Shared section wrapper ─────────────────────────────── */
+    .content-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem 6rem;
+    }
+
+    /* ── Section label / heading ────────────────────────────── */
+    .sec-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem; display: block;
+    }
+    .sec-heading {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.9rem; font-weight: 900; letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 1rem;
+    }
+    .sec-lead {
+      font-size: 0.95rem; color: var(--body-text);
+      line-height: 1.7; max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── Divider between major sections ────────────────────── */
+    .page-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 4rem 0;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       HOW TO PLAY
+    ════════════════════════════════════════════════════════ */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .how-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .how-card:hover {
+      border-color: rgba(255,255,255,0.13);
+      transform: translateY(-2px);
+    }
+    .how-step {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .how-card h3 {
+      font-size: 1rem; font-weight: 800;
+      margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .how-card p {
+      font-size: 0.87rem; color: var(--body-text); line-height: 1.65;
+    }
+
+    /* Pip colour key */
+    .pip-key {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    .pip-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.8rem 1rem;
+    }
+    .pip-swatch {
+      width: 36px; height: 36px; border-radius: 8px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pip-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: rgba(255,255,255,0.88);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .pip-info strong { font-size: 0.85rem; font-weight: 800; display: block; }
+    .pip-info span   { font-size: 0.78rem; color: var(--muted); }
+
+    /* Scoring callout */
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.1rem 1.4rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem; color: var(--body-text); line-height: 1.7;
+    }
+    .callout.green  { border-left-color: var(--green); }
+    .callout.yellow { border-left-color: var(--yellow); }
+    .callout strong { color: var(--text); }
+    .callout a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    .callout a:hover { text-decoration: underline; }
+
+    /* Tips list */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .tip-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.4rem 1.4rem 1.3rem;
+    }
+    .tip-label {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--yellow);
+      margin-bottom: 0.5rem; display: block;
+    }
+    .tip-card p {
+      font-size: 0.87rem; color: var(--body-text); line-height: 1.65;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       GAME MODES
+    ════════════════════════════════════════════════════════ */
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .mode-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem 1.5rem;
+    }
+    .mode-accent {
+      display: inline-block;
+      width: 10px; height: 10px; border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+    .mode-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .mode-card p  { font-size: 0.87rem; color: var(--body-text); line-height: 1.65; }
+
+    /* ════════════════════════════════════════════════════════
+       FAQ
+    ════════════════════════════════════════════════════════ */
+    .faq-list {
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .faq-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%; background: none; border: none;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem; font-weight: 800; color: var(--text);
+      transition: background 0.15s;
+    }
+    .faq-question:hover { background: rgba(255,255,255,0.03); }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s, background 0.2s;
+      font-size: 0.7rem; color: var(--muted);
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      background: var(--blue);
+      color: #fff;
+    }
+    .faq-answer {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                  padding 0.25s ease;
+      font-size: 0.9rem; color: var(--body-text); line-height: 1.72;
+      padding: 0 1.5rem;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 400px;
+      padding: 0 1.5rem 1.4rem;
+    }
+    .faq-answer a { color: var(--blue); text-decoration: none; font-weight: 700; }
+    .faq-answer a:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════════════════════════════
+       CONTACT
+    ════════════════════════════════════════════════════════ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .contact-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem 1.5rem;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+    .contact-card .cc-label {
+      font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+    .contact-card h3 { font-size: 0.95rem; font-weight: 800; }
+    .contact-card p  { font-size: 0.85rem; color: var(--body-text); line-height: 1.6; }
+    .contact-card a  {
+      display: inline-block; margin-top: 0.6rem;
+      color: var(--blue); font-size: 0.88rem; font-weight: 700;
+      text-decoration: none;
+    }
+    .contact-card a:hover { text-decoration: underline; }
+    .contact-card.highlight {
+      border-color: rgba(51,153,219,0.3);
+      background: linear-gradient(135deg, rgba(51,153,219,0.07) 0%, var(--bg2) 60%);
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 1.5rem;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.4rem; font-weight: 900; color: var(--blue);
+    }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a {
+      color: var(--muted); font-size: 0.85rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { color: var(--muted); font-size: 0.78rem; }
+
+    /* ── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate { animation: fadeUp 0.65s ease both; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .pip-key, .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ───────────────────────────────────────────────── -->
+  <nav class="z1">
+    <a class="nav-logo" href="index.html">pipfall</a>
+    <div class="nav-links">
+      <a href="index.html#how">How to Play</a>
+      <a href="index.html#features">Features</a>
+      <a href="support.html" class="active">Support</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <header class="page-header z1">
+    <div class="page-header-glow"></div>
+    <div class="page-eyebrow">Help &amp; Support</div>
+    <h1 class="page-title">We've got you covered.</h1>
+    <p class="page-subtitle">Everything you need to play, progress, and get help — all in one place.</p>
+  </header>
+
+  <!-- ── Content ───────────────────────────────────────────── -->
+  <main class="content-wrap z1">
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 1 · HOW TO PLAY
+    ══════════════════════════════════════════════════════ -->
+    <section class="animate delay-1">
+      <span class="sec-eyebrow" style="color: var(--blue);">How to Play</span>
+      <h2 class="sec-heading">The basics in four steps</h2>
+      <p class="sec-lead">
+        Pipfall is a cascading puzzle game built on the mathematics of sandpiles.
+        Each level gives you a board seeded with sand and a hand of three shapes.
+        Your goal is to trigger the biggest cascades possible and rack up spills.
+      </p>
+
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-step" style="color: var(--blue);">Step 01</div>
+          <h3>Read the board</h3>
+          <p>The grid shows cells loaded with 0–3 pips. Cells with 4 or more pips are
+          unstable and will burst. Plan ahead — one placement can set off a
+          long chain reaction.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-step" style="color: var(--green);">Step 02</div>
+          <h3>Choose &amp; place a shape</h3>
+          <p>You always have three shapes available. Drag a shape from the tray and drop
+          it onto the board. The shape must land on cells that already hold at least one
+          pip — you cannot place on empty cells.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-step" style="color: var(--yellow);">Step 03</div>
+          <h3>Watch the cascade</h3>
+          <p>Any cell that hits 4 pips fires simultaneously, sending one pip to each
+          of its four cardinal neighbors. Those neighbors may then fire too, creating
+          wave after wave until the board stabilizes.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-step" style="color: var(--red);">Step 04</div>
+          <h3>Score your spills</h3>
+          <p>Pips that fire off the edge of the board — or into void cells — are
+          <strong>spills</strong>. Every spill earns a point. Hit the target score
+          before you run out of shapes to win the level.</p>
+        </div>
+      </div>
+
+      <!-- Pip colour key -->
+      <div style="margin-top: 2.5rem;">
+        <span class="sec-eyebrow" style="color: var(--muted); font-size: 0.62rem;">Pip Colour Key</span>
+        <div class="pip-key">
+          <div class="pip-row">
+            <div class="pip-swatch" style="background:#2d2d2d;"></div>
+            <div class="pip-info">
+              <strong>0 pips</strong>
+              <span>Empty — cannot be placed on</span>
+            </div>
+          </div>
+          <div class="pip-row">
+            <div class="pip-swatch" style="background:#3399db;">
+              <div class="pip-dot"></div>
+            </div>
+            <div class="pip-info">
+              <strong>1 pip</strong>
+              <span>Blue — stable, needs 3 more to burst</span>
+            </div>
+          </div>
+          <div class="pip-row">
+            <div class="pip-swatch" style="background:#2ecc70; display:flex; gap:3px;">
+              <div class="pip-dot"></div><div class="pip-dot"></div>
+            </div>
+            <div class="pip-info">
+              <strong>2 pips</strong>
+              <span>Green — stable, needs 2 more to burst</span>
+            </div>
+          </div>
+          <div class="pip-row">
+            <div class="pip-swatch" style="background:#f2c40a; display:flex; gap:3px;">
+              <div class="pip-dot"></div><div class="pip-dot"></div><div class="pip-dot"></div>
+            </div>
+            <div class="pip-info">
+              <strong>3 pips</strong>
+              <span>Yellow — one more pip will trigger a burst</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout green" style="margin-top:1.75rem;">
+        <strong>Edge cells are powerful.</strong> A cell on the edge of the board has
+        fewer neighbors, so when it bursts more pips spill off the board and score points.
+        Corner cells spill on two sides at once. Build your cascades toward the edges
+        for maximum score.
+      </div>
+    </section>
+
+    <hr class="page-divider" />
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 2 · STRATEGY TIPS
+    ══════════════════════════════════════════════════════ -->
+    <section class="animate delay-2">
+      <span class="sec-eyebrow" style="color: var(--yellow);">Strategy</span>
+      <h2 class="sec-heading">Tips &amp; tricks</h2>
+      <p class="sec-lead">
+        Pipfall rewards long-term thinking. Here are some strategies to help you
+        climb from one star to three.
+      </p>
+
+      <div class="tips-grid">
+        <div class="tip-card">
+          <span class="tip-label">Chain reactions</span>
+          <p>Look for clusters of yellow (3-pip) cells near each other. A single
+          placement that triggers one can start a cascade that sweeps across the board
+          if the neighbors are primed.</p>
+        </div>
+        <div class="tip-card">
+          <span class="tip-label">Shape selection</span>
+          <p>You get three shapes per turn — you only use one. Consider what the
+          other two shapes offer before committing. Sometimes waiting for a better
+          configuration is worth a lower-scoring placement now.</p>
+        </div>
+        <div class="tip-card">
+          <span class="tip-label">Count your shapes</span>
+          <p>The counter at the bottom shows how many shapes remain. If your score
+          is low with few shapes left, focus on maximizing a single large cascade
+          rather than small, safe plays.</p>
+        </div>
+        <div class="tip-card">
+          <span class="tip-label">Work the edges</span>
+          <p>Interior cells burst in four directions — only one direction spills.
+          Edge cells spill on two sides; corners on two. Route your cascades outward
+          to convert more bursts into scored points.</p>
+        </div>
+        <div class="tip-card">
+          <span class="tip-label">Void cells</span>
+          <p>Some levels have void (inactive) cells inside the board. Bursts that
+          fire into a void count as spills, just like the edge — use them as
+          hidden scoring opportunities.</p>
+        </div>
+        <div class="tip-card">
+          <span class="tip-label">Simultaneous bursts</span>
+          <p>All cells at 4+ pips fire at the same time in each wave. Two adjacent
+          over-threshold cells won't interfere with each other mid-wave — they both
+          fire fully before the next wave is evaluated.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="page-divider" />
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 3 · GAME MODES
+    ══════════════════════════════════════════════════════ -->
+    <section class="animate delay-1">
+      <span class="sec-eyebrow" style="color: var(--green);">Game Modes</span>
+      <h2 class="sec-heading">Three ways to play</h2>
+      <p class="sec-lead">
+        Whether you want a structured challenge, a quick daily fix, or to replay a
+        favourite puzzle, Pipfall has a mode for it.
+      </p>
+
+      <div class="modes-grid">
+        <div class="mode-card">
+          <div class="mode-accent" style="background: var(--blue); box-shadow: 0 0 8px var(--blue);"></div>
+          <h3>Level Mode</h3>
+          <p>Over 100 handcrafted levels spread across themed worlds, each with its
+          own board layout and target score. Earn up to three stars per level.
+          Complete a level to unlock the next.</p>
+        </div>
+        <div class="mode-card">
+          <div class="mode-accent" style="background: var(--yellow); box-shadow: 0 0 8px var(--yellow);"></div>
+          <h3>Daily Puzzle</h3>
+          <p>A new puzzle is released every day. All players worldwide get the same
+          puzzle on the same day. Complete it to extend your streak — and come back
+          tomorrow for a fresh challenge.</p>
+        </div>
+        <div class="mode-card">
+          <div class="mode-accent" style="background: var(--green); box-shadow: 0 0 8px var(--green);"></div>
+          <h3>World Select</h3>
+          <p>Browse all unlocked worlds and replay any level you've already beaten.
+          Use it to improve your star rating, practice tricky board layouts, or just
+          enjoy a favourite cascade again.</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 1.75rem;">
+        <strong>Stars &amp; scoring:</strong> Each level has three score thresholds.
+        Reach the first to win and unlock the next level. Reach the second and third
+        to earn additional stars. Stars are tracked per level and contribute to your
+        overall Statistics.
+      </div>
+    </section>
+
+    <hr class="page-divider" />
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 4 · FAQ
+    ══════════════════════════════════════════════════════ -->
+    <section class="animate delay-2">
+      <span class="sec-eyebrow" style="color: var(--blue);">FAQ</span>
+      <h2 class="sec-heading">Frequently asked questions</h2>
+      <p class="sec-lead">
+        Can't find what you're looking for? Reach out via the contact section below.
+      </p>
+
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Why can't I place my shape?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Shapes can only be placed on cells that already contain at least one pip.
+            You cannot place on empty (dark grey) cells or void cells. Make sure every
+            active cell in your shape overlaps a cell with existing sand. If no valid
+            placement exists for a shape, try a different shape or a different position.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            What happens when I run out of shapes?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            The level ends when you have placed all your shapes. If your score meets
+            the first star threshold, you win and unlock the next level. If not, you
+            can retry the level as many times as you like — there is no penalty for
+            replaying.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            How do I earn three stars on a level?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Each level has three score thresholds shown in the progress bar at the top
+            of the screen. The number displayed (e.g. "0 / 48") is your current score
+            versus the three-star target. To earn all three stars you need to hit the
+            maximum threshold before your shapes run out. Focus on triggering large
+            cascades that push pips off the board edges or into void cells.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            My cascade looked smaller than I expected — why?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Remember that the cascade fires in simultaneous waves. In each wave, all
+            cells at 4+ pips burst at the same time before the next wave is calculated.
+            Two adjacent over-threshold cells each lose 4 pips and pass one pip to their
+            shared neighbor — they don't chain into each other mid-wave. This is the
+            mathematical property that makes the system predictable and fair.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Can I replay the Daily Puzzle?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Each Daily Puzzle can be played once per day. Once you complete or exhaust
+            it, the result is recorded. A brand new puzzle becomes available at midnight
+            in your local time zone. Past daily puzzles are not available for replay,
+            but all Level Mode puzzles can be replayed any time from the World Select
+            screen.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            How do I restore my purchases?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            All purchases are managed by Apple. If you reinstall the app or get a new
+            device, go to Settings within Pipfall and tap "Restore Purchases." Your
+            Apple ID entitlements will be reactivated automatically. If you experience
+            any issues, please contact
+            <a href="https://support.apple.com/billing" target="_blank" rel="noopener">Apple Support</a>.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Will my progress transfer to a new iPhone?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            If you back up your device with iCloud or iTunes and restore it to your new
+            iPhone, your Pipfall progress will transfer as part of that backup. Progress
+            is stored locally on your device, so if you set up your new phone as new
+            (without restoring a backup) your progress will not carry over automatically.
+            We recommend using iCloud Backup before switching devices.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            How do I turn off ads?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Ads in Pipfall are served by Google AdMob. You can limit ad personalisation
+            by going to iOS Settings → Privacy &amp; Security → Tracking and revoking
+            Pipfall's tracking permission. To remove ads entirely, look for a remove-ads
+            option in the in-app purchase menu within Pipfall.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            What is the sandpile model?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            The Abelian sandpile model is a mathematical system studied in physics and
+            combinatorics. In it, grains of sand are added to a grid; any cell with 4 or
+            more grains "topples," redistributing one grain to each neighbor. Because
+            toppling events commute — the final stable state is the same regardless of
+            the order cells fire — the model is called "abelian." Pipfall is a direct
+            implementation of this model, making every cascade you trigger mathematically
+            precise and deterministic.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false">
+            Is Pipfall suitable for kids?
+            <span class="faq-chevron">▾</span>
+          </button>
+          <div class="faq-answer">
+            Yes. Pipfall is rated 4+ on the Apple App Store. It contains no violent,
+            adult, or inappropriate content. The game does show advertisements from
+            Google AdMob; if you would prefer an ad-free experience for your child,
+            look for the remove-ads purchase within the app. There are no social
+            features, chat, or any mechanism for sharing personal information.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <hr class="page-divider" />
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 5 · CONTACT
+    ══════════════════════════════════════════════════════ -->
+    <section class="animate delay-1">
+      <span class="sec-eyebrow" style="color: var(--green);">Contact</span>
+      <h2 class="sec-heading">Still need help?</h2>
+      <p class="sec-lead">
+        If the FAQ didn't answer your question, or if you've found a bug, we'd love
+        to hear from you. We aim to respond within a few business days.
+      </p>
+
+      <div class="contact-grid">
+        <div class="contact-card highlight">
+          <div class="cc-label">General Support</div>
+          <h3>Send us an email</h3>
+          <p>For gameplay questions, bug reports, level feedback, or anything else
+          related to Pipfall.</p>
+          <a href="mailto:cjasonmaier@gmail.com">cjasonmaier@gmail.com</a>
+        </div>
+        <div class="contact-card">
+          <div class="cc-label">In-App Purchases</div>
+          <h3>Billing &amp; purchases</h3>
+          <p>All transactions are handled by Apple. For refunds, billing issues, or
+          purchase history, please contact Apple directly.</p>
+          <a href="https://support.apple.com/billing" target="_blank" rel="noopener">Apple Billing Support →</a>
+        </div>
+        <div class="contact-card">
+          <div class="cc-label">Privacy</div>
+          <h3>Privacy inquiries</h3>
+          <p>Questions about data collection, advertising, or your rights under GDPR
+          or CCPA — we take these seriously and respond within 30 days.</p>
+          <a href="privacy.html">View Privacy Policy →</a>
+        </div>
+        <div class="contact-card">
+          <div class="cc-label">App Store</div>
+          <h3>Leave a review</h3>
+          <p>Enjoying Pipfall? An App Store review helps others find the game and
+          helps us keep building new levels and features.</p>
+          <a href="#">Rate on the App Store →</a>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top: 2rem;">
+        <strong>Found a bug?</strong> Please include your device model, iOS version,
+        and a brief description of what happened. Screenshots or screen recordings are
+        incredibly helpful and get issues resolved much faster.
+      </div>
+    </section>
+
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner z1">
+      <div class="footer-logo">pipfall</div>
+      <div class="footer-links">
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+      <p class="footer-copy">© 2026 C. Jason Maier. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ── FAQ accordion ─────────────────────────────────────── -->
+  <script>
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(el => {
+          el.classList.remove('open');
+          el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        });
+
+        // Toggle clicked one
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
